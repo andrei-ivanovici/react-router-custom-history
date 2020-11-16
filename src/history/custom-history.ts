@@ -15,12 +15,13 @@ export class CustomHistory implements History {
         state: null
     };
     _stateStack: StateMachine<Location> = new StateMachine<Location>(this.location);
-    createHref = noopFn;
     replace = noopFn;
 
     public get length(): number {
         return this._stateStack.length;
     }
+
+    createHref = () => "";
 
     block = () => noopFn;
 
