@@ -1,19 +1,9 @@
-import {
-    History,
-    Action,
-    Location,
-    LocationDescriptorObject,
-    UnregisterCallback,
-    LocationDescriptor,
-    TransitionPromptHook,
-    LocationListener,
-    LocationState,
-    Href,
-    Path,
-} from "history";
+import {History, Action, Location, LocationListener, Path,} from "history";
 import {StateMachine} from "./StackMachine";
 
 let id = 0;
+const noopFn: () => any = () => {
+};
 
 export class CustomHistory implements History {
     action: Action = "POP";
@@ -25,19 +15,14 @@ export class CustomHistory implements History {
         state: null
     };
     _stateStack: StateMachine<Location> = new StateMachine<Location>(this.location);
+    createHref = noopFn;
+    replace = noopFn;
 
     public get length(): number {
         return this._stateStack.length;
     }
 
-    block(prompt?: boolean | string | TransitionPromptHook): UnregisterCallback {
-        return () => {
-        };
-    }
-
-    createHref(location: LocationDescriptorObject): Href {
-        return "";
-    }
+    block = () => noopFn;
 
     go(n: number): void {
         this.location = this._stateStack.goTo(n);
@@ -80,14 +65,6 @@ export class CustomHistory implements History {
         this._notifyChange("PUSH");
 
     };
-
-
-    replace(path: Path, state?: LocationState): void;
-
-    replace(location: LocationDescriptor<LocationState>): void;
-
-    replace(path: Path | LocationDescriptor<LocationState>, state?: LocationState): void {
-    }
 
     private _notifyChange(action: Action) {
         this._listener(this.location, action);
